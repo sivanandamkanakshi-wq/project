@@ -1,0 +1,2414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BusTicketPro - Online Bus Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --accent: #4CAF50;
+            --accent2: #FF9933;
+            --green: #138808;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --gray: #6c757d;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Login/Register Styles */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .auth-box {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .auth-header:after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 20px solid var(--secondary);
+        }
+
+        .auth-logo {
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .auth-body {
+            padding: 2rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.8rem;
+            text-align: center;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .auth-tab.active {
+            color: var(--primary);
+        }
+
+        .auth-tab.active:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent2), var(--accent));
+            border-radius: 3px 3px 0 0;
+        }
+
+        .auth-form {
+            display: none;
+            animation: slideIn 0.4s ease;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            z-index: 1;
+        }
+
+        .input-with-icon input,
+        .input-with-icon select {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 45px;
+            border: 2px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--light);
+        }
+
+        .input-with-icon input:focus,
+        .input-with-icon select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(to right, var(--accent2), var(--accent));
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(255, 153, 51, 0.2);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            color: var(--gray);
+        }
+
+        .auth-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-link:hover {
+            color: var(--accent2);
+            text-decoration: underline;
+        }
+
+        .form-errors {
+            background: #ffebee;
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .form-errors.show {
+            display: block;
+        }
+
+        .error-item {
+            color: #d32f2f;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .logo span {
+            background: linear-gradient(to right, #fff, var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(to right, var(--accent2), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .user-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 4px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: none;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent2), var(--green));
+            width: 20%;
+            transition: width 0.5s ease;
+        }
+
+        /* Main Content Container */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Step Containers */
+        .step-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin: 2rem 0;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .step-container.active {
+            display: block;
+        }
+
+        /* Step 1: Search Section */
+        #search-step {
+            margin-top: -2rem;
+            border-top: 4px solid var(--accent);
+        }
+
+        .search-title {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 1.5rem;
+            align-items: end;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--light);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+        }
+
+        .autocomplete-container {
+            position: relative;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .autocomplete-item {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .autocomplete-item:hover {
+            background: var(--light);
+        }
+
+        .swap-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .swap-btn {
+            background: linear-gradient(135deg, var(--accent2), var(--accent));
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .swap-btn:hover {
+            transform: rotate(180deg) scale(1.1);
+        }
+
+        .search-btn {
+            background: linear-gradient(to right, var(--accent), var(--green));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.2);
+        }
+
+        /* Step 2: Bus List Section */
+        .section-title {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bus-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .bus-card {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent);
+            cursor: pointer;
+        }
+
+        .bus-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .bus-card.selected {
+            border-left: 4px solid var(--green);
+            background: linear-gradient(135deg, #e8f5e9, #ffffff);
+        }
+
+        .bus-info {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .bus-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .bus-details h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .bus-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .bus-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .bus-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--green);
+        }
+
+        .select-btn {
+            background: linear-gradient(to right, var(--accent), var(--green));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .select-btn:hover {
+            background: linear-gradient(to right, #45a049, #0d7a11);
+            transform: translateY(-2px);
+        }
+
+        /* Step 3: Seat Selection */
+        .seat-layout {
+            background: #f8f9fa;
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .driver-seat {
+            background: var(--gray);
+            color: white;
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            width: 200px;
+            margin: 0 auto 2rem;
+            text-align: center;
+        }
+
+        .seat-map {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .seat {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .seat.available {
+            background: #e8f5e9;
+            color: var(--green);
+            border: 2px solid #c8e6c9;
+        }
+
+        .seat.selected {
+            background: linear-gradient(135deg, var(--accent), var(--green));
+            color: white;
+            border: 2px solid var(--accent);
+            transform: scale(1.1);
+        }
+
+        .seat.booked {
+            background: #ffebee;
+            color: var(--danger);
+            border: 2px solid #ffcdd2;
+            cursor: not-allowed;
+        }
+
+        .seat.women {
+            background: #f3e5f5;
+            border: 2px solid #ce93d8;
+        }
+
+        .seat.available:hover {
+            background: #c8e6c9;
+            transform: scale(1.05);
+        }
+
+        .seat-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        /* Step 4: Passenger Details */
+        .passenger-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .passenger-card {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            border: 2px solid #eee;
+        }
+
+        .passenger-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-details {
+            background: linear-gradient(135deg, #f0f7ff, #ffffff);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        /* Step 5: E-Ticket */
+        .ticket {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ticket:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--accent), var(--green));
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px dashed #ddd;
+        }
+
+        .ticket-body {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .ticket-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            margin-bottom: 1rem;
+        }
+
+        .info-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .ticket-passengers {
+            background: #f8f9fa;
+            border-radius: var(--radius);
+            padding: 1rem;
+        }
+
+        .passenger-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Booking Summary */
+        .booking-summary {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .summary-total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid #ddd;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 2rem 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-section a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+        }
+
+        /* Loading & Notification */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(to right, var(--green), #2ecc71);
+        }
+
+        .notification.info {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+
+        .notification.warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .auth-box {
+                max-width: 100%;
+            }
+            
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-profile {
+                margin-right: 1rem;
+            }
+            
+            .user-info {
+                display: none;
+            }
+            
+            .bus-card {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .bus-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .seat-map {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .btn, .btn-secondary, .select-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .ticket-body {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login/Registration Container -->
+    <div class="auth-container" id="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-bus"></i>
+                    <span>BusTicketPro</span>
+                </div>
+                <p>Book bus tickets across India</p>
+            </div>
+            
+            <div class="auth-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+                    <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form class="auth-form active" id="login-form" onsubmit="event.preventDefault(); login();">
+                    <div class="form-errors" id="login-errors"></div>
+                    
+                    <div class="form-group">
+                        <label for="login-email">
+                            <i class="fas fa-envelope"></i> Email Address
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="login-email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="login-password" placeholder="Enter your password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('login-password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login to Continue
+                    </button>
+                    
+                    <div class="auth-footer">
+                        <p>Don't have an account? <span class="auth-link" onclick="switchAuthTab('register')">Register here</span></p>
+                        <p style="font-size: 0.9rem; margin-top: 10px;">Demo: admin@example.com / password123</p>
+                    </div>
+                </form>
+                
+                <!-- Registration Form -->
+                <form class="auth-form" id="register-form" onsubmit="event.preventDefault(); register();">
+                    <div class="form-errors" id="register-errors"></div>
+                    
+                    <div class="form-group">
+                        <label for="register-name">
+                            <i class="fas fa-user"></i> Full Name
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="register-name" placeholder="Enter your full name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-email">
+                            <i class="fas fa-envelope"></i> Email Address
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="register-email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-phone">
+                            <i class="fas fa-phone"></i> Phone Number
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="register-phone" placeholder="Enter your phone number" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-gender">
+                            <i class="fas fa-venus-mars"></i> Gender
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-venus-mars"></i>
+                            <select id="register-gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-password">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="register-password" placeholder="Create a password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('register-password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-confirm-password">
+                            <i class="fas fa-lock"></i> Confirm Password
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="register-confirm-password" placeholder="Confirm your password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('register-confirm-password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="auth-btn">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                    
+                    <div class="auth-footer">
+                        <p>Already have an account? <span class="auth-link" onclick="switchAuthTab('login')">Login here</span></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application Container (Hidden Initially) -->
+    <div id="main-container" style="display: none;">
+        <header>
+            <div class="logo">
+                <i class="fas fa-bus"></i>
+                <span>BusTicketPro</span>
+            </div>
+            
+            <div class="user-profile" id="user-profile">
+                <!-- User info will be populated here -->
+            </div>
+            
+            <div class="progress-bar" id="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Step 1: Search Buses -->
+            <div class="step-container active" id="search-step">
+                <h2 class="search-title">Search Buses Across India</h2>
+                
+                <form class="search-form" onsubmit="event.preventDefault(); searchBuses();">
+                    <div class="form-group autocomplete-container">
+                        <label for="from">
+                            <i class="fas fa-map-marker-alt"></i> From City
+                        </label>
+                        <input type="text" id="from" class="form-control" 
+                               placeholder="Start typing city name..."
+                               autocomplete="off"
+                               oninput="showAutocomplete(this, 'from')"
+                               onfocus="showAutocomplete(this, 'from')">
+                        <div class="autocomplete-dropdown" id="from-autocomplete"></div>
+                    </div>
+                    
+                    <div class="swap-container">
+                        <button type="button" class="swap-btn" onclick="swapLocations()">
+                            <i class="fas fa-exchange-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="form-group autocomplete-container">
+                        <label for="to">
+                            <i class="fas fa-map-marker-alt"></i> To City
+                        </label>
+                        <input type="text" id="to" class="form-control" 
+                               placeholder="Start typing city name..."
+                               autocomplete="off"
+                               oninput="showAutocomplete(this, 'to')"
+                               onfocus="showAutocomplete(this, 'to')">
+                        <div class="autocomplete-dropdown" id="to-autocomplete"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date">
+                            <i class="fas fa-calendar-alt"></i> Journey Date
+                        </label>
+                        <input type="date" id="date" class="form-control" required>
+                    </div>
+                    
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i> Search Buses
+                    </button>
+                </form>
+            </div>
+
+            <!-- Step 2: Bus List -->
+            <div class="step-container" id="bus-list-step">
+                <h2 class="section-title">
+                    <i class="fas fa-bus"></i> Available Buses
+                    <span id="route-info" style="font-size: 1rem; color: var(--gray);"></span>
+                </h2>
+                
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Searching for available buses...</p>
+                </div>
+                
+                <div id="bus-list" class="bus-list">
+                    <!-- Buses will be dynamically loaded here -->
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-secondary" onclick="goToStep('search-step')">
+                        <i class="fas fa-arrow-left"></i> Back to Search
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Seat Selection -->
+            <div class="step-container" id="seat-selection-step">
+                <h2 class="section-title">
+                    <i class="fas fa-chair"></i> Select Seats
+                    <span id="selected-bus-info" style="font-size: 1rem; color: var(--gray);"></span>
+                </h2>
+                
+                <div class="seat-layout">
+                    <div class="driver-seat">
+                        <i class="fas fa-bus"></i> Driver's Cabin
+                    </div>
+                    
+                    <div class="seat-map" id="seat-map">
+                        <!-- Seats will be generated by JavaScript -->
+                    </div>
+                    
+                    <div class="seat-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #e8f5e9;"></div>
+                            <span>Available</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(135deg, var(--accent), var(--green));"></div>
+                            <span>Selected</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #ffebee;"></div>
+                            <span>Booked</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #f3e5f5;"></div>
+                            <span>Women Only</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="booking-summary">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">
+                        <i class="fas fa-ticket-alt"></i> Selected Seats
+                    </h3>
+                    <div class="selected-seats-list" id="selected-seats-list" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0;"></div>
+                    <div class="summary-total">
+                        Total: ₹<span id="total-price">0</span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-secondary" onclick="goToStep('bus-list-step')">
+                        <i class="fas fa-arrow-left"></i> Back to Bus List
+                    </button>
+                    <button class="select-btn" onclick="goToStep('passenger-details-step')">
+                        <i class="fas fa-users"></i> Continue to Passenger Details
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Passenger Details -->
+            <div class="step-container" id="passenger-details-step">
+                <h2 class="section-title">
+                    <i class="fas fa-user-friends"></i> Passenger Details
+                    <span style="font-size: 1rem; color: var(--gray);">
+                        Seats: <span id="seat-count">0</span> | Total: ₹<span id="price-total">0</span>
+                    </span>
+                </h2>
+                
+                <div class="passenger-form" id="passenger-form">
+                    <!-- Passenger forms will be generated here -->
+                </div>
+                
+                <div class="contact-details">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">
+                        <i class="fas fa-phone-alt"></i> Contact Details
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contact-name">Full Name</label>
+                            <input type="text" id="contact-name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-phone">Mobile Number</label>
+                            <input type="tel" id="contact-phone" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contact-email">Email Address</label>
+                            <input type="email" id="contact-email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-emergency">Emergency Contact</label>
+                            <input type="tel" id="contact-emergency" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-secondary" onclick="goToStep('seat-selection-step')">
+                        <i class="fas fa-arrow-left"></i> Back to Seat Selection
+                    </button>
+                    <button class="select-btn" onclick="goToStep('ticket-step')">
+                        <i class="fas fa-lock"></i> Proceed to Payment
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: E-Ticket -->
+            <div class="step-container" id="ticket-step">
+                <h2 class="section-title">
+                    <i class="fas fa-ticket-alt"></i> E-Ticket
+                    <span style="font-size: 1rem; color: var(--gray);">Booking Confirmed</span>
+                </h2>
+                
+                <div class="ticket" id="ticket">
+                    <div class="ticket-header">
+                        <div>
+                            <h3 style="color: var(--primary);">Booking Confirmed!</h3>
+                            <p style="color: var(--gray);">Your ticket has been generated successfully</p>
+                        </div>
+                        <div style="font-size: 4rem; color: var(--accent);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="ticket-body">
+                        <div class="ticket-info" id="ticket-info">
+                            <!-- Ticket info will be populated here -->
+                        </div>
+                        
+                        <div class="ticket-passengers">
+                            <h4 style="color: var(--primary); margin-bottom: 1rem;">Passengers</h4>
+                            <div id="ticket-passengers-list"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="ticket-footer" style="text-align: center; margin-top: 2rem; padding-top: 1rem; border-top: 2px dashed #ddd; color: var(--gray); font-size: 0.9rem;">
+                        <p><i class="fas fa-info-circle"></i> Please arrive at the boarding point 30 minutes before departure</p>
+                        <p>Ticket ID: <strong id="ticket-id">IND00000000</strong></p>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="select-btn" onclick="printTicket()">
+                        <i class="fas fa-print"></i> Print Ticket
+                    </button>
+                    <button class="btn-secondary" onclick="bookAnother()">
+                        <i class="fas fa-bus"></i> Book Another Ticket
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer id="contact">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BusTicketPro</h3>
+                    <p>Your trusted partner for bus ticket booking. We connect you to thousands of destinations across the country.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><i class="fas fa-home"></i><a href="#" onclick="goToStep('search-step')">Home</a></li>
+                        <li><i class="fas fa-ticket-alt"></i><a href="#" onclick="goToStep('search-step')">Book Tickets</a></li>
+                        <li><i class="fas fa-book"></i><a href="#">My Bookings</a></li>
+                        <li><i class="fas fa-times-circle"></i><a href="#">Cancel Ticket</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +1 234 567 8900</li>
+                        <li><i class="fas fa-envelope"></i> support@busticketpro.com</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Street, City, Country</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 BusTicketPro. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // User Database (In a real app, this would be on a server)
+        let users = JSON.parse(localStorage.getItem('busBookingUsers')) || [];
+        
+        // Current logged in user
+        let currentUser = JSON.parse(sessionStorage.getItem('currentUser')) || null;
+
+        // Indian Cities Database
+        const indianCities = [
+            { name: "Mumbai", state: "Maharashtra", code: "BOM" },
+            { name: "Delhi", state: "Delhi", code: "DEL" },
+            { name: "Bangalore", state: "Karnataka", code: "BLR" },
+            { name: "Hyderabad", state: "Telangana", code: "HYD" },
+            { name: "Chennai", state: "Tamil Nadu", code: "MAA" },
+            { name: "Kolkata", state: "West Bengal", code: "CCU" },
+            { name: "Ahmedabad", state: "Gujarat", code: "AMD" },
+            { name: "Pune", state: "Maharashtra", code: "PNQ" },
+            { name: "Jaipur", state: "Rajasthan", code: "JAI" },
+            { name: "Lucknow", state: "Uttar Pradesh", code: "LKO" },
+            { name: "Kochi", state: "Kerala", code: "COK" },
+            { name: "Goa", state: "Goa", code: "GOI" },
+            { name: "Nagpur", state: "Maharashtra", code: "NAG" },
+            { name: "Indore", state: "Madhya Pradesh", code: "IDR" },
+            { name: "Bhopal", state: "Madhya Pradesh", code: "BHO" },
+            { name: "Coimbatore", state: "Tamil Nadu", code: "CJB" },
+            { name: "Visakhapatnam", state: "Andhra Pradesh", code: "VTZ" },
+            { name: "Patna", state: "Bihar", code: "PAT" },
+            { name: "Chandigarh", state: "Punjab", code: "IXC" },
+            { name: "Dehradun", state: "Uttarakhand", code: "DED" }
+        ];
+
+        // Bus Data with Detailed Information
+        const busData = [
+            {
+                id: 1,
+                name: "Express Travels",
+                operator: "RSRTC",
+                type: "AC Sleeper",
+                from: "Delhi",
+                to: "Jaipur",
+                departure: "22:00",
+                arrival: "03:30",
+                duration: "5h 30m",
+                price: 1200,
+                amenities: ["WiFi", "Charging", "Water", "Blanket", "TV"],
+                seats: 40,
+                bookedSeats: [3, 7, 12, 15, 20, 25, 30],
+                womenSeats: [1, 2, 3, 4]
+            },
+            {
+                id: 2,
+                name: "City Rider",
+                operator: "MSRTC",
+                type: "Non-AC Seater",
+                from: "Mumbai",
+                to: "Pune",
+                departure: "07:30",
+                arrival: "11:15",
+                duration: "3h 45m",
+                price: 450,
+                amenities: ["Water", "TV"],
+                seats: 35,
+                bookedSeats: [1, 5, 10, 14, 19],
+                womenSeats: [6, 7, 8, 9]
+            },
+            {
+                id: 3,
+                name: "Premium Express",
+                operator: "KSRTC",
+                type: "AC Seater",
+                from: "Bangalore",
+                to: "Chennai",
+                departure: "23:00",
+                arrival: "05:15",
+                duration: "6h 15m",
+                price: 1500,
+                amenities: ["WiFi", "Charging", "Snacks", "Blanket", "Entertainment"],
+                seats: 30,
+                bookedSeats: [2, 6, 11, 16, 21],
+                womenSeats: [10, 11, 12, 13]
+            },
+            {
+                id: 4,
+                name: "Ganga Yamuna Express",
+                operator: "UPSRTC",
+                type: "Non-AC Seater",
+                from: "Delhi",
+                to: "Chandigarh",
+                departure: "06:00",
+                arrival: "11:00",
+                duration: "5h 00m",
+                price: 600,
+                amenities: ["Water"],
+                seats: 45,
+                bookedSeats: [4, 8, 13, 18, 23, 28],
+                womenSeats: [20, 21, 22, 23]
+            }
+        ];
+
+        // Application State
+        let currentStep = 'search-step';
+        let selectedBus = null;
+        let selectedSeats = [];
+        let passengerDetails = [];
+        let bookingData = {};
+
+        // DOM Elements
+        const authContainer = document.getElementById('auth-container');
+        const mainContainer = document.getElementById('main-container');
+        const userProfile = document.getElementById('user-profile');
+        const progressBar = document.getElementById('progress');
+        const progressContainer = document.getElementById('progress-bar');
+        const fromInput = document.getElementById('from');
+        const toInput = document.getElementById('to');
+        const notification = document.getElementById('notification');
+
+        // Initialize
+        function init() {
+            // Check if user is already logged in
+            if (currentUser) {
+                showMainApp();
+            } else {
+                showAuthForm();
+            }
+            
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            if (document.getElementById('date')) {
+                document.getElementById('date').valueAsDate = tomorrow;
+            }
+            
+            // Add demo user if not exists
+            if (!users.find(u => u.email === 'admin@example.com')) {
+                users.push({
+                    id: generateUserId(),
+                    name: 'Demo User',
+                    email: 'admin@example.com',
+                    phone: '9876543210',
+                    gender: 'male',
+                    password: 'password123',
+                    bookings: [],
+                    createdAt: new Date().toISOString()
+                });
+                saveUsers();
+            }
+        }
+
+        // Show authentication form
+        function showAuthForm() {
+            authContainer.style.display = 'flex';
+            mainContainer.style.display = 'none';
+        }
+
+        // Show main application
+        function showMainApp() {
+            authContainer.style.display = 'none';
+            mainContainer.style.display = 'block';
+            updateUserProfile();
+            updateProgress();
+        }
+
+        // Update user profile in header
+        function updateUserProfile() {
+            if (!currentUser) return;
+            
+            const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            
+            userProfile.innerHTML = `
+                <div class="user-avatar" title="${currentUser.name}">
+                    ${initials.substring(0, 2)}
+                </div>
+                <div class="user-info">
+                    <div class="user-name">${currentUser.name.split(' ')[0]}</div>
+                    <button class="user-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            `;
+        }
+
+        // Switch between login and register tabs
+        function switchAuthTab(tab) {
+            // Update tabs
+            document.querySelectorAll('.auth-tab').forEach(t => {
+                t.classList.remove('active');
+                if (t.textContent.toLowerCase().includes(tab)) {
+                    t.classList.add('active');
+                }
+            });
+            
+            // Update forms
+            document.querySelectorAll('.auth-form').forEach(form => {
+                form.classList.remove('active');
+                if (form.id === `${tab}-form`) {
+                    form.classList.add('active');
+                }
+            });
+            
+            // Clear errors
+            document.getElementById(`${tab}-errors`).innerHTML = '';
+            document.getElementById(`${tab}-errors`).classList.remove('show');
+        }
+
+        // Toggle password visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const toggleBtn = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        }
+
+        // Show form errors
+        function showFormErrors(formId, errors) {
+            const errorContainer = document.getElementById(`${formId}-errors`);
+            errorContainer.innerHTML = errors.map(error => 
+                `<div class="error-item"><i class="fas fa-exclamation-circle"></i> ${error}</div>`
+            ).join('');
+            errorContainer.classList.add('show');
+        }
+
+        // Generate user ID
+        function generateUserId() {
+            return 'USER' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5).toUpperCase();
+        }
+
+        // Save users to localStorage
+        function saveUsers() {
+            localStorage.setItem('busBookingUsers', JSON.stringify(users));
+        }
+
+        // Login function
+        function login() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            // Clear previous errors
+            const errorContainer = document.getElementById('login-errors');
+            errorContainer.innerHTML = '';
+            errorContainer.classList.remove('show');
+            
+            // Validation
+            const errors = [];
+            if (!email) errors.push('Email is required');
+            if (!password) errors.push('Password is required');
+            
+            if (errors.length > 0) {
+                showFormErrors('login', errors);
+                return;
+            }
+            
+            // Find user
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (!user) {
+                showFormErrors('login', ['Invalid email or password']);
+                return;
+            }
+            
+            // Login successful
+            currentUser = user;
+            sessionStorage.setItem('currentUser', JSON.stringify(user));
+            showNotification('Login successful! Welcome back, ' + user.name.split(' ')[0], 'success');
+            
+            // Show main app
+            setTimeout(() => {
+                showMainApp();
+            }, 1000);
+        }
+
+        // Register function
+        function register() {
+            const name = document.getElementById('register-name').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const phone = document.getElementById('register-phone').value.trim();
+            const gender = document.getElementById('register-gender').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            
+            // Clear previous errors
+            const errorContainer = document.getElementById('register-errors');
+            errorContainer.innerHTML = '';
+            errorContainer.classList.remove('show');
+            
+            // Validation
+            const errors = [];
+            if (!name) errors.push('Full name is required');
+            if (!email) errors.push('Email is required');
+            if (!phone) errors.push('Phone number is required');
+            if (!gender) errors.push('Gender is required');
+            if (!password) errors.push('Password is required');
+            if (!confirmPassword) errors.push('Please confirm your password');
+            
+            if (password && password.length < 6) {
+                errors.push('Password must be at least 6 characters long');
+            }
+            
+            if (password && confirmPassword && password !== confirmPassword) {
+                errors.push('Passwords do not match');
+            }
+            
+            if (email && !validateEmail(email)) {
+                errors.push('Please enter a valid email address');
+            }
+            
+            if (phone && !validatePhone(phone)) {
+                errors.push('Please enter a valid phone number');
+            }
+            
+            // Check if email already exists
+            if (email && users.find(u => u.email === email)) {
+                errors.push('Email is already registered');
+            }
+            
+            if (errors.length > 0) {
+                showFormErrors('register', errors);
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: generateUserId(),
+                name: name,
+                email: email,
+                phone: phone,
+                gender: gender,
+                password: password,
+                bookings: [],
+                createdAt: new Date().toISOString()
+            };
+            
+            // Add to users array
+            users.push(newUser);
+            saveUsers();
+            
+            // Auto login
+            currentUser = newUser;
+            sessionStorage.setItem('currentUser', JSON.stringify(newUser));
+            
+            showNotification('Registration successful! Welcome to BusTicketPro', 'success');
+            
+            // Show main app
+            setTimeout(() => {
+                showMainApp();
+            }, 1000);
+        }
+
+        // Logout function
+        function logout() {
+            currentUser = null;
+            sessionStorage.removeItem('currentUser');
+            showNotification('Logged out successfully', 'info');
+            
+            // Reset application state
+            selectedBus = null;
+            selectedSeats = [];
+            passengerDetails = [];
+            bookingData = {};
+            currentStep = 'search-step';
+            
+            // Clear forms
+            document.getElementById('from').value = '';
+            document.getElementById('to').value = '';
+            
+            // Show auth form
+            setTimeout(() => {
+                showAuthForm();
+                switchAuthTab('login');
+            }, 500);
+        }
+
+        // Email validation
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Phone validation
+        function validatePhone(phone) {
+            const re = /^[0-9]{10}$/;
+            return re.test(phone);
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            if (!progressBar) return;
+            
+            const stepProgress = {
+                'search-step': 20,
+                'bus-list-step': 40,
+                'seat-selection-step': 60,
+                'passenger-details-step': 80,
+                'ticket-step': 100
+            };
+            
+            const width = stepProgress[currentStep] || 20;
+            progressBar.style.width = `${width}%`;
+            progressContainer.style.display = currentStep !== 'search-step' ? 'block' : 'none';
+        }
+
+        // Navigate to specific step
+        function goToStep(stepId) {
+            // Hide all steps
+            document.querySelectorAll('.step-container').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Show target step
+            document.getElementById(stepId).classList.add('active');
+            currentStep = stepId;
+            
+            // Update progress bar
+            updateProgress();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // If going to seat selection, generate seat map
+            if (stepId === 'seat-selection-step' && selectedBus) {
+                generateSeatMap();
+            }
+            
+            // If going to passenger details, generate forms
+            if (stepId === 'passenger-details-step' && selectedSeats.length > 0) {
+                generatePassengerForms();
+            }
+            
+            // If going to ticket step, generate ticket
+            if (stepId === 'ticket-step') {
+                generateTicket();
+            }
+        }
+
+        // Show autocomplete
+        function showAutocomplete(input, type) {
+            const value = input.value.trim().toLowerCase();
+            const dropdown = document.getElementById(`${type}-autocomplete`);
+            
+            if (value.length === 0) {
+                dropdown.style.display = 'none';
+                return;
+            }
+            
+            const filteredCities = indianCities.filter(city =>
+                city.name.toLowerCase().includes(value) ||
+                city.state.toLowerCase().includes(value)
+            ).slice(0, 8);
+            
+            if (filteredCities.length === 0) {
+                dropdown.innerHTML = `<div class="autocomplete-item">No cities found</div>`;
+            } else {
+                dropdown.innerHTML = filteredCities.map(city => `
+                    <div class="autocomplete-item" onclick="selectCity('${type}', '${city.name}')">
+                        <i class="fas fa-city"></i>
+                        <span>${city.name}</span>
+                        <span style="margin-left: auto; color: var(--gray);">${city.state}</span>
+                    </div>
+                `).join('');
+            }
+            
+            dropdown.style.display = 'block';
+            
+            document.addEventListener('click', function closeDropdown(e) {
+                if (!dropdown.contains(e.target) && e.target !== input) {
+                    dropdown.style.display = 'none';
+                    document.removeEventListener('click', closeDropdown);
+                }
+            });
+        }
+
+        // Select city
+        function selectCity(type, cityName) {
+            const input = type === 'from' ? fromInput : toInput;
+            input.value = cityName;
+            document.getElementById(`${type}-autocomplete`).style.display = 'none';
+        }
+
+        // Swap locations
+        function swapLocations() {
+            const fromValue = fromInput.value;
+            const toValue = toInput.value;
+            
+            if (!fromValue && !toValue) {
+                showNotification('Please select cities first!', 'info');
+                return;
+            }
+            
+            fromInput.value = toValue;
+            toInput.value = fromValue;
+            showNotification('Cities swapped!', 'success');
+        }
+
+        // Show loading
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            const busList = document.getElementById('bus-list');
+            loading.style.display = show ? 'block' : 'none';
+            busList.style.display = show ? 'none' : 'grid';
+        }
+
+        // Search buses
+        function searchBuses() {
+            const from = fromInput.value.trim();
+            const to = toInput.value.trim();
+            const date = document.getElementById('date').value;
+            
+            if (!from || !to) {
+                showNotification('Please select both cities!', 'info');
+                return;
+            }
+            
+            if (from === to) {
+                showNotification('Departure and destination cannot be same!', 'info');
+                return;
+            }
+            
+            if (!date) {
+                showNotification('Please select date!', 'info');
+                return;
+            }
+            
+            showLoading(true);
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // Filter buses
+                const filteredBuses = busData.filter(bus => 
+                    (bus.from.toLowerCase() === from.toLowerCase() && bus.to.toLowerCase() === to.toLowerCase()) ||
+                    (bus.from.toLowerCase() === to.toLowerCase() && bus.to.toLowerCase() === from.toLowerCase())
+                );
+                
+                if (filteredBuses.length === 0) {
+                    showNotification('No buses found for this route!', 'info');
+                    showLoading(false);
+                    return;
+                }
+                
+                displayBuses(filteredBuses, from, to, date);
+                showLoading(false);
+                goToStep('bus-list-step');
+                showNotification(`Found ${filteredBuses.length} buses for ${from} to ${to}`, 'success');
+            }, 1000);
+        }
+
+        // Display buses
+        function displayBuses(buses, from, to, date) {
+            const busList = document.getElementById('bus-list');
+            const routeInfo = document.getElementById('route-info');
+            
+            // Format date
+            const dateObj = new Date(date);
+            const formattedDate = dateObj.toLocaleDateString('en-IN', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            routeInfo.textContent = `${from} → ${to} • ${formattedDate}`;
+            
+            busList.innerHTML = buses.map(bus => `
+                <div class="bus-card" onclick="selectBus(${bus.id})" id="bus-${bus.id}">
+                    <div class="bus-info">
+                        <div class="bus-icon">
+                            <i class="fas fa-bus"></i>
+                        </div>
+                        <div class="bus-details">
+                            <h3>${bus.name} (${bus.operator})</h3>
+                            <div class="bus-meta">
+                                <span><i class="fas fa-clock"></i> ${bus.departure} - ${bus.arrival}</span>
+                                <span><i class="fas fa-hourglass-half"></i> ${bus.duration}</span>
+                                <span><i class="fas fa-couch"></i> ${bus.type}</span>
+                                <span><i class="fas fa-wifi"></i> ${bus.amenities.join(', ')}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bus-price">
+                        ₹${bus.price}
+                    </div>
+                    <button class="select-btn" onclick="event.stopPropagation(); selectBus(${bus.id})">
+                        Select Seats
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Select bus
+        function selectBus(busId) {
+            selectedBus = busData.find(bus => bus.id === busId);
+            
+            // Remove selected class from all buses
+            document.querySelectorAll('.bus-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked bus
+            document.getElementById(`bus-${busId}`).classList.add('selected');
+            
+            // Update selected bus info
+            const selectedBusInfo = document.getElementById('selected-bus-info');
+            selectedBusInfo.textContent = `${selectedBus.name} | ${selectedBus.from} → ${selectedBus.to}`;
+            
+            // Go to seat selection
+            setTimeout(() => {
+                goToStep('seat-selection-step');
+            }, 300);
+        }
+
+        // Generate seat map
+        function generateSeatMap() {
+            const seatMap = document.getElementById('seat-map');
+            if (!selectedBus || !seatMap) return;
+            
+            const totalSeats = selectedBus.seats;
+            const bookedSeats = selectedBus.bookedSeats;
+            const womenSeats = selectedBus.womenSeats;
+            
+            seatMap.innerHTML = '';
+            selectedSeats = [];
+            
+            // Create seat layout
+            for (let i = 1; i <= totalSeats; i++) {
+                const seat = document.createElement('div');
+                seat.className = 'seat';
+                seat.id = `seat-${i}`;
+                
+                // Determine seat type
+                if (bookedSeats.includes(i)) {
+                    seat.classList.add('booked');
+                } else if (womenSeats.includes(i)) {
+                    seat.classList.add('women');
+                    seat.classList.add('available');
+                } else {
+                    seat.classList.add('available');
+                }
+                
+                seat.innerHTML = `<div class="seat-number">${i}</div>`;
+                
+                // Add click event for available seats
+                if (!bookedSeats.includes(i)) {
+                    seat.addEventListener('click', () => toggleSeat(i));
+                }
+                
+                seatMap.appendChild(seat);
+            }
+            
+            updateSelectedSeatsDisplay();
+        }
+
+        // Toggle seat selection
+        function toggleSeat(seatNumber) {
+            const seatElement = document.getElementById(`seat-${seatNumber}`);
+            const index = selectedSeats.indexOf(seatNumber);
+            
+            if (index === -1) {
+                // Maximum 6 seats per booking
+                if (selectedSeats.length >= 6) {
+                    showNotification('Maximum 6 seats per booking!', 'info');
+                    return;
+                }
+                selectedSeats.push(seatNumber);
+                seatElement.classList.add('selected');
+                seatElement.classList.remove('available');
+            } else {
+                selectedSeats.splice(index, 1);
+                seatElement.classList.remove('selected');
+                seatElement.classList.add('available');
+            }
+            
+            updateSelectedSeatsDisplay();
+        }
+
+        // Update selected seats display
+        function updateSelectedSeatsDisplay() {
+            const selectedSeatsList = document.getElementById('selected-seats-list');
+            const totalPrice = document.getElementById('total-price');
+            
+            selectedSeatsList.innerHTML = selectedSeats.map(seat => `
+                <div style="background: linear-gradient(to right, var(--accent), var(--green)); color: white; padding: 0.5rem 1rem; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px;">
+                    <i class="fas fa-chair"></i> Seat ${seat}
+                </div>
+            `).join('');
+            
+            const total = selectedSeats.length * selectedBus.price;
+            totalPrice.textContent = total;
+        }
+
+        // Generate passenger forms
+        function generatePassengerForms() {
+            const passengerForm = document.getElementById('passenger-form');
+            if (!passengerForm || selectedSeats.length === 0) return;
+            
+            passengerForm.innerHTML = '';
+            
+            // Update seat count and price
+            document.getElementById('seat-count').textContent = selectedSeats.length;
+            document.getElementById('price-total').textContent = selectedSeats.length * selectedBus.price;
+            
+            for (let i = 0; i < selectedSeats.length; i++) {
+                const passengerCard = document.createElement('div');
+                passengerCard.className = 'passenger-card';
+                passengerCard.innerHTML = `
+                    <div class="passenger-header">
+                        <i class="fas fa-user"></i>
+                        <h3>Passenger ${i + 1} (Seat ${selectedSeats[i]})</h3>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" class="form-control passenger-name" 
+                                   placeholder="Enter full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Age</label>
+                            <input type="number" class="form-control passenger-age" 
+                                   placeholder="Age" min="1" max="120" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select class="form-control passenger-gender" required>
+                                <option value="">Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>ID Proof</label>
+                            <select class="form-control passenger-id-type" required>
+                                <option value="">Select ID</option>
+                                <option value="aadhar">Aadhar Card</option>
+                                <option value="pan">PAN Card</option>
+                                <option value="passport">Passport</option>
+                                <option value="dl">Driving License</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>ID Number</label>
+                        <input type="text" class="form-control passenger-id-number" 
+                               placeholder="Enter ID number" required>
+                    </div>
+                `;
+                passengerForm.appendChild(passengerCard);
+            }
+        }
+
+        // Generate ticket
+        function generateTicket() {
+            // Collect passenger details
+            passengerDetails = [];
+            const passengerCards = document.querySelectorAll('.passenger-card');
+            
+            let isValid = true;
+            
+            passengerCards.forEach((card, index) => {
+                const name = card.querySelector('.passenger-name')?.value.trim() || '';
+                const age = card.querySelector('.passenger-age')?.value || '';
+                const gender = card.querySelector('.passenger-gender')?.value || '';
+                const idType = card.querySelector('.passenger-id-type')?.value || '';
+                const idNumber = card.querySelector('.passenger-id-number')?.value.trim() || '';
+                
+                if (!name || !age || !gender || !idType || !idNumber) {
+                    isValid = false;
+                    return;
+                }
+                
+                passengerDetails.push({
+                    seat: selectedSeats[index],
+                    name: name,
+                    age: parseInt(age),
+                    gender: gender,
+                    idType: idType,
+                    idNumber: idNumber
+                });
+            });
+            
+            // Validate contact details
+            const contactName = document.getElementById('contact-name')?.value.trim() || '';
+            const contactPhone = document.getElementById('contact-phone')?.value.trim() || '';
+            const contactEmail = document.getElementById('contact-email')?.value.trim() || '';
+            const emergencyContact = document.getElementById('contact-emergency')?.value.trim() || '';
+            
+            if (!contactName || !contactPhone || !contactEmail || !emergencyContact) {
+                isValid = false;
+                showNotification('Please fill all contact details!', 'info');
+                return;
+            }
+            
+            if (!isValid || passengerDetails.length === 0) {
+                showNotification('Please fill all passenger details!', 'info');
+                return;
+            }
+            
+            // Create booking data
+            bookingData = {
+                bookingId: 'IND' + Date.now().toString().slice(-8),
+                bus: selectedBus,
+                seats: selectedSeats,
+                passengers: passengerDetails,
+                contact: {
+                    name: contactName,
+                    phone: contactPhone,
+                    email: contactEmail,
+                    emergency: emergencyContact
+                },
+                totalPrice: selectedSeats.length * selectedBus.price,
+                bookingTime: new Date().toLocaleString('en-IN'),
+                date: document.getElementById('date').value,
+                userId: currentUser?.id
+            };
+            
+            // Save booking to user's history
+            if (currentUser) {
+                const userIndex = users.findIndex(u => u.id === currentUser.id);
+                if (userIndex !== -1) {
+                    users[userIndex].bookings.push(bookingData);
+                    saveUsers();
+                    
+                    // Update current user
+                    currentUser = users[userIndex];
+                    sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+                }
+            }
+            
+            // Update ticket display
+            const ticketInfo = document.getElementById('ticket-info');
+            const ticketPassengers = document.getElementById('ticket-passengers-list');
+            const ticketId = document.getElementById('ticket-id');
+            
+            // Set ticket ID
+            ticketId.textContent = bookingData.bookingId;
+            
+            // Format date
+            const dateObj = new Date(bookingData.date);
+            const formattedDate = dateObj.toLocaleDateString('en-IN', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            // Populate ticket info
+            ticketInfo.innerHTML = `
+                <div class="info-item">
+                    <div class="info-label">Booking ID</div>
+                    <div class="info-value">${bookingData.bookingId}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Bus</div>
+                    <div class="info-value">${bookingData.bus.name} (${bookingData.bus.operator})</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Route</div>
+                    <div class="info-value">${bookingData.bus.from} → ${bookingData.bus.to}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Departure</div>
+                    <div class="info-value">${bookingData.bus.departure}, ${formattedDate}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Duration</div>
+                    <div class="info-value">${bookingData.bus.duration}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Arrival</div>
+                    <div class="info-value">${bookingData.bus.arrival}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Seats</div>
+                    <div class="info-value">${bookingData.seats.join(', ')}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Total Fare</div>
+                    <div class="info-value">₹${bookingData.totalPrice}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Contact</div>
+                    <div class="info-value">${bookingData.contact.name}<br>${bookingData.contact.phone}</div>
+                </div>
+            `;
+            
+            // Populate passengers list
+            ticketPassengers.innerHTML = bookingData.passengers.map(passenger => `
+                <div class="passenger-item">
+                    <div>
+                        <strong>${passenger.name}</strong><br>
+                        <small>Seat ${passenger.seat} • ${passenger.age} yrs • ${passenger.gender}</small>
+                    </div>
+                    <div>
+                        <small>${passenger.idType.toUpperCase()}: ${passenger.idNumber}</small>
+                    </div>
+                </div>
+            `).join('');
+            
+            showNotification('Booking confirmed! E-ticket generated.', 'success');
+        }
+
+        // Print ticket
+        function printTicket() {
+            const ticket = document.getElementById('ticket');
+            const originalContents = document.body.innerHTML;
+            
+            document.body.innerHTML = ticket.innerHTML;
+            window.print();
+            document.body.innerHTML = originalContents;
+            window.location.reload();
+        }
+
+        // Book another ticket
+        function bookAnother() {
+            // Reset booking state
+            selectedBus = null;
+            selectedSeats = [];
+            passengerDetails = [];
+            bookingData = {};
+            
+            // Clear forms
+            document.getElementById('passenger-form').innerHTML = '';
+            document.getElementById('contact-name').value = '';
+            document.getElementById('contact-phone').value = '';
+            document.getElementById('contact-email').value = '';
+            document.getElementById('contact-emergency').value = '';
+            
+            // Reset inputs
+            fromInput.value = '';
+            toInput.value = '';
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('date').valueAsDate = tomorrow;
+            
+            // Go back to search step
+            goToStep('search-step');
+            
+            showNotification('Ready to book another ticket!', 'info');
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            
+            let icon = 'fas fa-info-circle';
+            if (type === 'success') icon = 'fas fa-check-circle';
+            if (type === 'warning') icon = 'fas fa-exclamation-triangle';
+            if (type === 'error') icon = 'fas fa-exclamation-circle';
+            
+            notification.innerHTML = `<i class="${icon}"></i> ${message}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize the application
+        init();
+    </script>
+</body>
+</html>
